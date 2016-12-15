@@ -1,0 +1,22 @@
+{
+  "name": "connect4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "connect4bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukwallace/connect4bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukwallace/connect4bot/issues"
+  },
+  "homepage": "https://github.com/lukwallace/connect4bot#readme",
+  "dependencies": {
+    "botkit": "^0.4.3"
+  }
+}
