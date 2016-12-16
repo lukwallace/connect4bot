@@ -25,11 +25,22 @@ const makeBoard = () => {
   return res;
 }
 
-//Asks the opponent for a move
-const getResponse = (bot, id, cb) => {
-  bot.startPrivateConversation({ user: id }, (err, convo) => {
-
-  }); 
+//Asks player for a move. If the message object is passed
+//to it, that means the it's from player one
+const getResponse = (bot, id, cb, message) => {
+  if(message) {
+    bot.startConversation(message, (err, convo) => {
+      convo.ask('Make your move! [1-7]', (response, convo) => {
+        cb(response, convo);
+      });
+    });
+  } else {
+    bot.startPrivateConversation({ user: id }, (err, convo) => {
+      convo.ask('Make your move! [1-7]', (response, convo) => {
+        cb(response, convo);
+      });
+    });
+  }
 };
 
 //Checks the board to see if there is a connect 4 or a tie
@@ -38,7 +49,7 @@ const getResponse = (bot, id, cb) => {
 //Returns 1 if player one wins
 //Returns 2 if player two wins
 const evaluate = (board) => {
-  return 0;
+  return -1;
 };
 
 const startGame = (bot, message, one, two) => {
@@ -46,27 +57,16 @@ const startGame = (bot, message, one, two) => {
   let matchEnd = -1;
   let turn = true;
 
-  bot.startConversation(message, (err, convo) => {
-    convo.say('Starting match!');
-
-    //Game loop
-    while(matchEnd === -1) {
-      if(turn){
-        convo.ask('Make your move! [1-7]', (response, convo) => { 
-          //update board state
-        });
-        matchEnd = evaluate(board);
-        turn = !turn;
-      } else {
-        getResponse(bot, two, (response, convo) => {
-          //update board state
-        });
-        matchEnd = evaluate(board);
-        turn = !turn;
-      }
-    }
-
-  });
+  const takeTurn = () => {
+    getResponse(bot, two, (response, convo) => {
+      //update board state
+      matchEnd = evaluate(board);
+      turn = !turn;
+      convo.next();
+      takeTurn();
+    }, turn ? message : null);      
+  }
+  takeTurn();
 };
 
 
